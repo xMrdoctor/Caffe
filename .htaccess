@@ -1,0 +1,51 @@
+# ==================================================================
+# Apache Configuration File for کافه دنیس Website
+# ==================================================================
+
+# Enable the rewrite engine, which is necessary for the rules below.
+RewriteEngine On
+
+# ------------------------------------------------------------------
+# Force HTTPS (Secure Connection)
+# ------------------------------------------------------------------
+# Check if the connection is not already HTTPS.
+RewriteCond %{HTTPS} off
+# If it's not, redirect the user to the same URL but with https://.
+# [L] means this is the last rule to apply if it matches.
+# [R=301] means it's a permanent redirect.
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ------------------------------------------------------------------
+# Custom 404 Error Page
+# ------------------------------------------------------------------
+# If a user requests a file that doesn't exist, show them our
+# custom 404.php page instead of the server's default error page.
+# The path should be from the web root. If the site is in a
+# subfolder (e.g., yourdomain.com/cafe), you must change this to:
+# ErrorDocument 404 /cafe/404.php
+ErrorDocument 404 /404.php
+
+# ------------------------------------------------------------------
+# Security Enhancements
+# ------------------------------------------------------------------
+# Prevent directory listing (prevents visitors from seeing a list
+# of files in a directory if there's no index file).
+Options -Indexes
+
+# Protect sensitive files from being accessed via a web browser.
+<FilesMatch "\.(sql|log|ini|env)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Specifically protect the config.php file.
+<Files "config.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# It's good practice to also deny access to the README, though not critical.
+<Files "README.txt">
+    Order allow,deny
+    Deny from all
+</Files>
